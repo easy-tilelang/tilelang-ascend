@@ -28,6 +28,9 @@ logger = logging.getLogger(__name__)
 
 # Environment variables False/True
 PYPI_BUILD = os.environ.get("PYPI_BUILD", "False").lower() == "true"
+# Distribution name on PyPI (pip install tilelang-ascend). Keep import package
+# directory name (PACKAGE_NAME) unchanged so users still `import tilelang`.
+DIST_NAME = "tilelang-ascend"
 PACKAGE_NAME = "tilelang"
 ROOT_DIR = os.path.dirname(__file__)
 
@@ -576,7 +579,7 @@ class TileLangSdistCommand(sdist):
     """Customized setuptools sdist command - includes the pyproject.toml file."""
 
     def make_distribution(self):
-        self.distribution.metadata.name = PACKAGE_NAME
+        self.distribution.metadata.name = DIST_NAME
         self.distribution.metadata.version = get_tilelang_version(with_cuda=False, with_system_info=False, with_commit_id=False)
         super().make_distribution()
 
@@ -742,7 +745,7 @@ class CMakeBuild(build_ext):
 
 
 setup(
-    name=PACKAGE_NAME,
+    name=DIST_NAME,
     version=(get_tilelang_version(with_cuda=False, with_system_info=False) if PYPI_BUILD else get_tilelang_version()),
     packages=find_packages(where="."),
     package_dir={"": "."},
